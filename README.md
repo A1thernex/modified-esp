@@ -1,4 +1,4 @@
-modified version of eclipse.wtf's esp, which fixes a lot of stuff and adds the feature to unload and enable/disable the esp.
+modified version of eclipse.wtf's esp, which fixes a lot of stuff and adds a couple of features (such as: unloading, enabling/disabling (why wasn't this a feature in the first place??)).
 
 original: https://github.com/krampus-organization/releases/blob/main/ESP.lua
 

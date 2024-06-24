@@ -71,13 +71,13 @@ ESP = {
         Gradient = true, GradientRGB1 = Color3RGB(200, 0, 0), GradientRGB2 = Color3RGB(60, 60, 125), GradientRGB3 = Color3RGB(119, 120, 255), 
     },
     Boxes = {
-        Animate = true,
+        Animate = false,
         RotationSpeed = 300,
         Gradient = false, GradientRGB1 = Color3RGB(119, 120, 255), GradientRGB2 = Color3RGB(0, 0, 0), 
-        GradientFill = true, GradientFillRGB1 = Color3RGB(119, 120, 255), GradientFillRGB2 = Color3RGB(0, 0, 0), 
+        GradientFill = false, GradientFillRGB1 = Color3RGB(119, 120, 255), GradientFillRGB2 = Color3RGB(0, 0, 0), 
         
         Filled = {
-            Enabled = true,
+            Enabled = false,
             Transparency = 0.75,
             RGB = Color3RGB(0, 0, 0),
         },

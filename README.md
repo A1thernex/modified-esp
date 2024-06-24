@@ -1,4 +1,4 @@
-modified version of eclipse.wtf's esp, which fixes a lot of stuff and adds a couple of features.
+modified version of eclipse.wtf's esp, which fixes some stuff and adds a couple of features.
 
 loadstring
 -

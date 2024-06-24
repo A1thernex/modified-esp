@@ -85,7 +85,7 @@ ESP = {
 * new features:
     * script now returns the esp table
     * unload() function
-    * toggling the visible of the esp (ESP.Enabled)
+    * toggling the visibility of the esp (ESP.Enabled)
     * sorting the esp by putting each element into its own indvidual player folder
     * making esp elements have names
 

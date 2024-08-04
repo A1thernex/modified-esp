@@ -234,6 +234,7 @@ do -- Initalize
     end)]]
 
     local ESP = function(plr)
+        print(plr.Name)
         coroutine.wrap(CreateFolder)(plr.Name)
         --coroutine.wrap(DupeCheck)(plr) -- Dupecheck
         local Name = Functions:Create("TextLabel", {Name = "Name", Parent = ScreenGui[plr.Name], Position = UDim2.new(0.5, 0, 0, -11), Size = UDim2.new(0, 100, 0, 20), AnchorPoint = Vector2.new(0.5, 0.5), BackgroundTransparency = 1, TextColor3 = Color3RGB(255, 255, 255), Font = Enum.Font.Code, TextSize = ESP.FontSize, TextStrokeTransparency = 0, TextStrokeColor3 = Color3RGB(0, 0, 0), RichText = true})
@@ -325,10 +326,21 @@ do -- Initalize
             end
 
             local function UpdateGradients()
-                Gradient1.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, ESP.Boxes.GradientFillRGB1), ColorSequenceKeypoint.new(1, ESP.Boxes.GradientFillRGB2)}
-                Gradient2.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, ESP.Boxes.GradientRGB1), ColorSequenceKeypoint.new(1, ESP.Boxes.GradientRGB2)}
-                Gradient3.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, ESP.Weapons.GradientRGB1), ColorSequenceKeypoint.new(1, ESP.Weapons.GradientRGB2)}
-                HealthBarGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, ESP.HealthBar.GradientRGB1), ColorSequenceKeypoint.new(0.5, ESP.HealthBar.GradientRGB2), ColorSequenceKeypoint.new(1, ESP.HealthBar.GradientRGB3)}
+                if ESP.Boxes.GradientFill then
+                    Gradient1.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, ESP.Boxes.GradientFillRGB1), ColorSequenceKeypoint.new(1, ESP.Boxes.GradientFillRGB2)}
+                else
+                    Gradient1.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, ESP.Boxes.Filled.RGB), ColorSequenceKeypoint.new(1, ESP.Boxes.Filled.RGB)}
+                end
+                if ESP.Boxes.Gradient then
+                    Gradient2.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, ESP.Boxes.GradientRGB1), ColorSequenceKeypoint.new(1, ESP.Boxes.GradientRGB2)}
+                else
+                    Gradient2.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, ESP.Boxes.Corner.RGB), ColorSequenceKeypoint.new(1, ESP.Boxes.Corner.RGB)}
+                end
+                if ESP.HealthBar.Gradient then
+                    HealthBarGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, ESP.HealthBar.GradientRGB1), ColorSequenceKeypoint.new(0.5, ESP.HealthBar.GradientRGB2), ColorSequenceKeypoint.new(1, ESP.HealthBar.GradientRGB3)}
+                else
+                    HealthBarGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, ESP.HealthBar.RGB), ColorSequenceKeypoint.new(0.5, ESP.HealthBar.RGB), ColorSequenceKeypoint.new(1, ESP.HealthBar.RGB)}
+                end
             end
             
             Connection = Euphoria.RunService.RenderStepped:Connect(function()
@@ -545,6 +557,7 @@ do -- Initalize
         end
         --
         game:GetService("Players").PlayerAdded:Connect(function(v)
+            print("New player: ".. v.Name)
             coroutine.wrap(ESP)(v)
         end);
     end;

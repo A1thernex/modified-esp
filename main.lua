@@ -480,6 +480,12 @@ do -- Initalize
                                 BehindHealthBar.Visible = ESP.HealthBar.Enabled;
                                 BehindHealthBar.Position = UDim2.new(0, Pos.X - w / 2 - 6, 0, Pos.Y - h / 2)  
                                 BehindHealthBar.Size = UDim2.new(0, ESP.HealthBar.Width, 0, h)
+
+                                if ESP.HealthBar.Gradient then
+                                    HealthBarGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, ESP.HealthBar.GradientRGB1), ColorSequenceKeypoint.new(0.5, ESP.HealthBar.GradientRGB2), ColorSequenceKeypoint.new(1, ESP.HealthBar.GradientRGB3)}
+                                else
+                                    HealthBarGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, ESP.HealthBar.RGB), ColorSequenceKeypoint.new(0.5, ESP.HealthBar.RGB), ColorSequenceKeypoint.new(1, ESP.HealthBar.RGB)}
+                                end
                                 -- Health Text
                                 do
                                     if ESP.HealthBar.HealthText then

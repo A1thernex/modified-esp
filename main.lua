@@ -320,7 +320,7 @@ do -- Initalize
                 if not plr then
                     ScreenGui:Destroy();
                     Connection:Disconnect();
-					Tracer:Remove()
+					--Tracer:Remove()
 
 					for _, line in SkeletonLines do
 						line:Remove()

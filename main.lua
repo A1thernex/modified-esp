@@ -310,8 +310,8 @@ do -- Initalize
 					end
 				end
 
-				Tracer.Visible = false
-				TracerOut.Visible = false
+				--[[Tracer.Visible = false
+				TracerOut.Visible = false]]
 
 				for _, line in SkeletonLines do
 					line.Visible = false

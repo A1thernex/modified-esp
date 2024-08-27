@@ -14,69 +14,74 @@ ESP = {
     TeamCheck = true,
     MaxDistance = 200,
     FontSize = 11,
+	RainbowSpeed = 1,
     FadeOut = {
         OnDistance = true,
         OnDeath = false,
         OnLeave = false,
     },
     Options = { 
-        FriendCheck = true, FriendCheckRGB = Color3.fromRGB(0, 255, 0),
-        Highlight = false, HighlightRGB = Color3.fromRGB(255, 0, 0),
+        FriendCheck = true, FriendCheckRGB = Color3RGB(0, 255, 0),
+        Highlight = false, HighlightRGB = Color3RGB(255, 0, 0),
     },
     Chams = {
         Enabled = false,
         Thermal = true,
-        FillRGB = Color3.fromRGB(119, 120, 255),
+        FillRGB = Color3RGB(119, 120, 255), RainbowFill = false,
         FillTransparency = 100,
-        OutlineRGB = Color3.fromRGB(119, 120, 255),
+        OutlineRGB = Color3RGB(119, 120, 255), RainbowOutline = false,
         OutlineTransparency = 100,
         VisibleCheck = true,
     },
     Names = {
         Enabled = false,
-        RGB = Color3.fromRGB(255, 255, 255),
-    },
-    Flags = {
-        Enabled = false,
+		NameType = "Regular", -- Regular, Display Name
+        RGB = Color3RGB(255, 255, 255), Rainbow = false,
     },
     Distances = {
         Enabled = false, 
-        Position = "Text",
-        RGB = Color3.fromRGB(255, 255, 255),
+		Suffix = "m",
+        Position = "Bottom", -- Text, Bottom
+        RGB = Color3RGB(255, 255, 255), Rainbow = false,
     },
-    Weapons = { -- doesn't work for now, might be fixed later
-        Enabled = false, WeaponTextRGB = Color3.fromRGB(119, 120, 255),
-        Outlined = false,
-        Gradient = false,
-        GradientRGB1 = Color3.fromRGB(255, 255, 255), GradientRGB2 = Color3.fromRGB(119, 120, 255),
-    },
+    Weapons = {
+        Enabled = false, 
+		RGB = Color3RGB(119, 120, 255), Rainbow = false,
+	},
     HealthBar = {
         Enabled = false,
-        RGB = Color3.fromRGB(0, 255, 0),
-        HealthText = false, Lerp = false, HealthTextRGB = Color3.fromRGB(255, 255, 255),
+        RGB = Color3RGB(0, 255, 0), Rainbow = false,
+        HealthText = false, Lerp = false, HealthTextPosition = "Left", HealthTextRGB = Color3RGB(255, 255, 255), RainbowText = false,
         Width = 2.5,
-        Gradient = true, GradientRGB1 = Color3.fromRGB(200, 0, 0), GradientRGB2 = Color3.fromRGB(60, 60, 125), GradientRGB3 = Color3.fromRGB(119, 120, 255), 
+        Gradient = false, GradientRGB1 = Color3RGB(200, 0, 0), GradientRGB2 = Color3RGB(60, 60, 125), GradientRGB3 = Color3RGB(119, 120, 255), RainbowGradient = false,
     },
     Boxes = {
         Animate = false,
         RotationSpeed = 300,
-        Gradient = false, GradientRGB1 = Color3.fromRGB(119, 120, 255), GradientRGB2 = Color3.fromRGB(0, 0, 0), 
-        GradientFill = false, GradientFillRGB1 = Color3.fromRGB(119, 120, 255), GradientFillRGB2 = Color3.fromRGB(0, 0, 0), 
+        Gradient = false, GradientRGB1 = Color3RGB(119, 120, 255), GradientRGB2 = Color3RGB(0, 0, 0), 
+        GradientFill = false, GradientFillRGB1 = Color3RGB(119, 120, 255), GradientFillRGB2 = Color3RGB(0, 0, 0), 
         
         Filled = {
             Enabled = false,
             Transparency = 0.75,
-            RGB = Color3.fromRGB(0, 0, 0),
+            RGB = Color3RGB(0, 0, 0), Rainbow = false,
         },
         Full = {
             Enabled = false,
-            RGB = Color3.fromRGB(255, 255, 255),
+            RGB = Color3RGB(255, 255, 255),
         },
         Corner = {
             Enabled = false,
-            RGB = Color3.fromRGB(255, 255, 255),
+            RGB = Color3RGB(255, 255, 255), Rainbow = false,
         },
-    }
+    };
+	Skeleton = {
+		Enabled = false,
+		RGB = Color3RGB(255, 255, 255), Rainbow = false,
+		Thickness = 1,
+		Transparency = 0,
+	};
+}
 ```
 </details>
 

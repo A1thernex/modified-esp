@@ -37,8 +37,6 @@ getgenv().ESP = {
     Whitelist = {},
     FadeOut = {
         OnDistance = true,
-        OnDeath = false,
-        OnLeave = false,
     },
     Chams = {
         Enabled = false,
@@ -359,10 +357,10 @@ do
         end;
     end;
 
-	function Functions:FadeOutOnDeath(element)
-        local transparency = 0
+    --[[function Functions:FadeOutOnDeath(element)
+        	local transparency = 0
 		repeat
-			transparency = transparency + 0.1
+		transparency = transparency + 0.1
         	if IsA(element, "TextLabel") then
             	element.TextTransparency = 1 - transparency
         	elseif IsA(element, "ImageLabel") then
@@ -378,7 +376,7 @@ do
             	element.OutlineTransparency = 1 - transparency
         	end;
 		until transparency == 1
-    end;  
+    end;]]  
 end;
 
 do -- Initalize

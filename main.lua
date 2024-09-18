@@ -114,7 +114,6 @@ getgenv().ESP = {
 
 -- font initialization, taken from office
 if writefile and isfile and Base64Dec then
-	print("sd")
 	if not isfile("Proggy.ttf") then
 		writefile("Proggy.ttf", Base64Dec(game:HttpGet("https://raw.githubusercontent.com/OxygenClub/Random-LUAS/main/Proggy.txt")))
 	end

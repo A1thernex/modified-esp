@@ -35,18 +35,18 @@ ESP = {
     },
     Names = {
         Enabled = false,
-		NameType = "Regular", -- Regular, Display Name
+        NameType = "Regular", -- Regular, Display Name
         RGB = Color3RGB(255, 255, 255), Rainbow = false,
     },
     Distances = {
         Enabled = false, 
-		Suffix = "m",
+	Suffix = "m",
         Position = "Bottom", -- Text, Bottom
         RGB = Color3RGB(255, 255, 255), Rainbow = false,
     },
     Weapons = {
         Enabled = false, 
-		RGB = Color3RGB(119, 120, 255), Rainbow = false,
+	RGB = Color3RGB(119, 120, 255), Rainbow = false,
 	},
     HealthBar = {
         Enabled = false,
@@ -76,10 +76,10 @@ ESP = {
         },
     };
 	Skeleton = {
-		Enabled = false,
-		RGB = Color3RGB(255, 255, 255), Rainbow = false,
-		Thickness = 1,
-		Transparency = 0,
+	     Enabled = false,
+	     RGB = Color3RGB(255, 255, 255), Rainbow = false,
+	     Thickness = 1,
+	     Transparency = 0,
 	};
 }
 ```

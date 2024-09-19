@@ -85,24 +85,6 @@ ESP = {
 ```
 </details>
 
-<details> <summary> full changelog </summary>
-
-* new features:
-    * script now returns the esp table
-    * unload() function
-    * toggling the visibility of the esp (ESP.Enabled)
-    * sorting the esp by putting each element into its own indvidual player folder
-    * making esp elements have names
-
-* fixes:
-    * gradient colors actually change now
-    * capitalization fixed in "Healthbar", "Friendcheck" 
-    
-* deleted:
-    * "Drawing" table, so it is easier to write the path to an esp element
-
-</details>
-
 <details> <summary> credits </summary>
 
 - original version of the esp: [click here](https://github.com/krampus-organization/releases/blob/main/ESP.lua)

@@ -3,7 +3,7 @@ modified version of eclipse.wtf's esp, which fixes some stuff and adds a lot of 
 loadstring
 -
 ```lua
-loadstring(game:HttpGet("https://raw.githubusercontent.com/A1thernex/random/main/modified_esp.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/A1thernex/modified-esp/main/main.lua"))()
 ```
 
 <details> <summary> current configurable settings </summary>

@@ -28,7 +28,7 @@ local VP, WTSP, WTVP = Cam.ViewportSize, Cam.WorldToScreenPoint, Cam.WorldToView
 local FFC, FFCOC, WFC, IsA = game.FindFirstChild, game.FindFirstChildOfClass, game.WaitForChild, game.IsA
 
 getgenv().ESP = {
-    Demo = true,
+    Demo = false,
     Enabled = false,
     TeamCheck = true,
     MaxDistance = 200,

@@ -28,7 +28,7 @@ local VP, WTSP, WTVP = Cam.ViewportSize, Cam.WorldToScreenPoint, Cam.WorldToView
 local FFC, FFCOC, WFC, IsA = game.FindFirstChild, game.FindFirstChildOfClass, game.WaitForChild, game.IsA
 
 getgenv().ESP = {
-    Demo = false,
+    Preview = false,
     Enabled = false,
     TeamCheck = true,
     MaxDistance = 200,
@@ -1055,7 +1055,7 @@ end;
 
 print("If you see this, it means the ESP has loaded correctly. Enjoy.")
 
-if ESP.Demo then
+if ESP.Preview then
     ESP:Demo(true)
     ESP.TeamCheck = false
     ESP.HealthBar.Gradient = true

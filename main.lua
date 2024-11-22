@@ -25,7 +25,6 @@ local Base64Dec = crypt.base64.decode
 
 local Cam = workspace.CurrentCamera;
 local VP, WTSP, WTVP = Cam.ViewportSize, Cam.WorldToScreenPoint, Cam.WorldToViewportPoint;
-local FFC, FFCOC, WFC, IsA = game.FindFirstChild, game.FindFirstChildOfClass, game.WaitForChild, game.IsA
 
 getgenv().ESP = {
     Preview = false,
@@ -535,7 +534,7 @@ do -- Initalize
                 else
                     if ScreenGui:FindFirstChild(plr.Name) then
 				        for _, element in ScreenGui[plr.Name]:GetChildren() do
-					        if IsA(element, "Highlight") then
+					        if element:IsA("Highlight") then
 						        element.Enabled = false
 					        else
 						        element.Visible = false
@@ -560,10 +559,10 @@ do -- Initalize
             end
 			
             Connection = Euphoria.RunService.RenderStepped:Connect(function(dt)
-                if plr.Character and FFC(plr.Character, "HumanoidRootPart") then
+                if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") and plr.Character:FindFirstChild("Humanoid") and plr.Character.Humanoid.Health > 1 then
                     local character = plr.Character
 					local HRP = character.HumanoidRootPart
-                    local Humanoid, Head = WFC(character, "Humanoid"), WFC(character, "Head");
+                    local Humanoid, Head = character:WaitForChild("Humanoid"), character:WaitForChild("Head");
                     local Pos, OnScreen = WTSP(Cam, HRP.Position)
                     local Dist = (Cam.CFrame.Position - HRP.Position).Magnitude / 3.5714285714
 
@@ -575,7 +574,7 @@ do -- Initalize
                         -- Fade-out effect --
                         if ESP.FadeOut.OnDistance and ScreenGui:FindFirstChild(plr.Name) then
 							for _, element in ScreenGui[plr.Name]:GetChildren() do
-                                if not IsA(element, "Highlight") then
+                                if not element:IsA("Highlight") then
 								    Functions:FadeOutOnDist(element, Dist)
                                 end
 							end
@@ -590,329 +589,331 @@ do -- Initalize
 						if Tblfind(ESP.Whitelist, plr.Name) or Tblfind(ESP.Whitelist, ESP.DisplayName) or ESP.TeamCheck and not ESP.HighlightTeammates and plr ~= lplayer and lplayer.Team == plr.Team then
                             HideESP();
                         else
-                                do -- Skeleton
-								    local connections = bodyConnections[Humanoid.RigType.Name] or {}
+                            do -- Skeleton
+								local connections = bodyConnections[Humanoid.RigType.Name] or {}
 
-            					    for _, connection in ipairs(connections) do
-                					    local partA = FFC(character, connection[1])
-                					    local partB = FFC(character, connection[2])
-                					    if partA and partB then
-                                            if SkeletonLines[plr.Name] == nil then
-                                                SkeletonLines[plr.Name] = {}
-                                            end
-                    					    local line = SkeletonLines[plr.Name][connection[1] .. "-" .. connection[2]] or Functions:createDrawing("Line", {Thickness = 1, Color = Color3RGB(255, 255, 255)})
-										    local posA, onScreenA = WTVP(Cam, partA.Position)
-                    					    local posB, onScreenB = WTVP(Cam, partB.Position)
-                    					    if onScreenA and onScreenB then
-                        					    line.From = Vec2new(posA.X, posA.Y)
-                        					    line.To = Vec2new(posB.X, posB.Y)
-                        					    line.Visible = ESP.Skeleton.Enabled
-                        					    SkeletonLines[plr.Name][connection[1] .. "-" .. connection[2]] = line
-                    					    else
-                        					    line.Visible = false
-                   						    end
-
-                                            if ESP.HighlightTeammates then
-                                                Color = ESP.Skeleton.TeamRainbow and ESP:GetRainbow() or ESP.Skeleton.TeamRGB
-                                            else
-                                                Color = ESP.Skeleton.Rainbow and ESP:GetRainbow() or ESP.Skeleton.RGB
-                                            end
-
-										    line.Color = Color
-										    line.Thickness = ESP.Skeleton.Thickness
-										    line.Transparency = 1 - ESP.Skeleton.Transparency
-                					    end
-            					    end
-							    end
-							    --
-                                do -- Chams
-                                    Chams.Adornee = plr.Character
-                                    Chams.Enabled = ESP.Chams.Enabled
-                                    Chams.FillColor = ESP.Chams.RainbowFill and ESP:GetRainbow() or ESP.Chams.FillRGB
-                                    Chams.OutlineColor = ESP.Chams.RainbowOutline and ESP:GetRainbow() or ESP.Chams.OutlineRGB
-                                    do -- Breathe
-                                        if ESP.Chams.Thermal then
-                                            local breathe_effect = math.atan(math.sin(tick() * 2)) * 2 / math.pi
-                                            Chams.FillTransparency = ESP.Chams.FillTransparency * breathe_effect * 0.01
-                                            Chams.OutlineTransparency = ESP.Chams.OutlineTransparency * breathe_effect * 0.01
+            					for _, connection in ipairs(connections) do
+                					local partA = character:FindFirstChild(connection[1])
+                					local partB = character:FindFirstChild(connection[2])
+                					    
+                                    if partA and partB then
+                                        if SkeletonLines[plr.Name] == nil then
+                                            SkeletonLines[plr.Name] = {}
                                         end
-                                    end
-                                    if ESP.Chams.VisibleCheck then
-                                        Chams.DepthMode = "Occluded"
-                                    else
-                                        Chams.DepthMode = "AlwaysOnTop"
-                                    end
-                                end;
-							    --
-                                do -- Box
-                                    if ESP.HighlightTeammates then
-                                        Color = ESP.Boxes.TeamRainbow and ESP:GetRainbow() or ESP.Boxes.TeamRGB
-                                    else
-                                        Color = ESP.Boxes.Rainbow and ESP:GetRainbow() or ESP.Boxes.RGB
-                                    end
 
-								    if ESP.Boxes.BoxType == "Corner" then
-                                	    LeftTop.Visible = true
-                                	    LeftTop.Position = UDim2new(0, Pos.X - w / 2, 0, Pos.Y - h / 2)
-                                	    LeftTop.Size = UDim2new(0, w / 5, 0, 1)
-									    LeftTop.BackgroundColor3 = Color
-                                
-									    LeftTopOut.Visible = ESP.Boxes.Outline and true or false
-                                        LeftTopOut.BackgroundColor3 = ESP.Boxes.RainbowOutline and ESP:GetRainbow() or ESP.Boxes.OutlineRGB
-                                	    LeftTopOut.Position = LeftTop.Position
-                                	    LeftTopOut.Size = LeftTop.Size
+                    					local line = SkeletonLines[plr.Name][connection[1] .. "-" .. connection[2]] or Functions:createDrawing("Line", {Thickness = 1, Color = Color3RGB(255, 255, 255)})
+										local posA, onScreenA = WTVP(Cam, partA.Position)
+                    					local posB, onScreenB = WTVP(Cam, partB.Position)
+                    					if onScreenA and onScreenB then
+                        					line.From = Vec2new(posA.X, posA.Y)
+                        					line.To = Vec2new(posB.X, posB.Y)
+                        					line.Visible = ESP.Skeleton.Enabled
+                        					SkeletonLines[plr.Name][connection[1] .. "-" .. connection[2]] = line
+                    					else
+                        					line.Visible = false
+                   						end
 
-                                	    LeftSide.Visible = true
-                                	    LeftSide.Position = UDim2new(0, Pos.X - w / 2, 0, Pos.Y - h / 2)
-                                	    LeftSide.Size = UDim2new(0, 1, 0, h / 5)
-									    LeftSide.BackgroundColor3 = Color
-                                
-									    LeftSideOut.Visible = ESP.Boxes.Outline and true or false
-                                        LeftSideOut.BackgroundColor3 = ESP.Boxes.RainbowOutline and ESP:GetRainbow() or ESP.Boxes.OutlineRGB
-                                	    LeftSideOut.Position = LeftSide.Position
-                                	    LeftSideOut.Size = LeftSide.Size
-
-                                	    BottomSide.Visible = true
-                                	    BottomSide.Position = UDim2new(0, Pos.X - w / 2, 0, Pos.Y + h / 2)
-                                	    BottomSide.Size = UDim2new(0, 1, 0, h / 5)
-                                	    BottomSide.AnchorPoint = Vec2new(0, 5)
-									    BottomSide.BackgroundColor3 = Color
-                                
-									    BottomSideOut.Visible = ESP.Boxes.Outline and true or false
-                                        BottomSideOut.BackgroundColor3 = ESP.Boxes.RainbowOutline and ESP:GetRainbow() or ESP.Boxes.OutlineRGB
-                                	    BottomSideOut.Position = BottomSide.Position
-                                	    BottomSideOut.Size = BottomSide.Size
-                                	    BottomSideOut.AnchorPoint = Vec2new(0, 5)
-
-                                	    BottomDown.Visible = true
-                                	    BottomDown.Position = UDim2new(0, Pos.X - w / 2, 0, Pos.Y + h / 2)
-                                	    BottomDown.Size = UDim2new(0, w / 5, 0, 1)
-                                	    BottomDown.AnchorPoint = Vec2new(0, 1)
-                                	    BottomDown.BackgroundColor3 = Color
-
-									    BottomDownOut.Visible = ESP.Boxes.Outline and true or false
-                                        BottomDownOut.BackgroundColor3 = ESP.Boxes.RainbowOutline and ESP:GetRainbow() or ESP.Boxes.OutlineRGB
-                                	    BottomDownOut.Position = BottomDown.Position
-                                	    BottomDownOut.Size = BottomDown.Size
-                                	    BottomDownOut.AnchorPoint = Vec2new(0, 1)
-
-                                	    RightTop.Visible = true
-                                	    RightTop.Position = UDim2new(0, Pos.X + w / 2, 0, Pos.Y - h / 2)
-                                	    RightTop.Size = UDim2new(0, w / 5, 0, 1)
-                                	    RightTop.AnchorPoint = Vec2new(1, 0)
-                                	    RightTop.BackgroundColor3 = Color
-
-									    RightTopOut.Visible = ESP.Boxes.Outline and true or false
-                                        RightTopOut.BackgroundColor3 = ESP.Boxes.RainbowOutline and ESP:GetRainbow() or ESP.Boxes.OutlineRGB
-                                	    RightTopOut.Position = RightTop.Position
-                                	    RightTopOut.Size = RightTop.Size
-                                	    RightTopOut.AnchorPoint = Vec2new(1, 0)
-
-                                	    RightSide.Visible = true
-                                	    RightSide.Position = UDim2new(0, Pos.X + w / 2 - 1, 0, Pos.Y - h / 2)
-                                	    RightSide.Size = UDim2new(0, 1, 0, h / 5)
-                                	    RightSide.AnchorPoint = Vec2new(0, 0)
-                               		    RightSide.BackgroundColor3 = Color
-							
-									    RightSideOut.Visible = ESP.Boxes.Outline and true or false
-                                        RightSideOut.BackgroundColor3 = ESP.Boxes.RainbowOutline and ESP:GetRainbow() or ESP.Boxes.OutlineRGB
-                                	    RightSideOut.Position = RightSide.Position
-                                	    RightSideOut.Size = RightSide.Size
-                                	    RightSideOut.AnchorPoint = Vec2new(0, 0)
-
-                                	    BottomRightSide.Visible = true
-                                	    BottomRightSide.Position = UDim2new(0, Pos.X + w / 2, 0, Pos.Y + h / 2)
-                                	    BottomRightSide.Size = UDim2new(0, 1, 0, h / 5)
-                                	    BottomRightSide.AnchorPoint = Vec2new(1, 1)
-                                	    BottomRightSide.BackgroundColor3 = Color
-
-									    BottomRightSideOut.Visible = ESP.Boxes.Outline and true or false
-                                        BottomRightSideOut.BackgroundColor3 = ESP.Boxes.RainbowOutline and ESP:GetRainbow() or ESP.Boxes.OutlineRGB
-                                	    BottomRightSideOut.Position = BottomRightSide.Position
-                                	    BottomRightSideOut.Size = BottomRightSide.Size
-                                	    BottomRightSideOut.AnchorPoint = Vec2new(1, 1)
-
-                                	    BottomRightDown.Visible = true
-                                	    BottomRightDown.Position = UDim2new(0, Pos.X + w / 2, 0, Pos.Y + h / 2)
-                                	    BottomRightDown.Size = UDim2new(0, w / 5, 0, 1)
-                                	    BottomRightDown.AnchorPoint = Vec2new(1, 1) 
-									    BottomRightDown.BackgroundColor3 = Color
-                            
-									    BottomRightDownOut.Visible = ESP.Boxes.Outline and true or false
-                                        BottomRightDownOut.BackgroundColor3 = ESP.Boxes.RainbowOutline and ESP:GetRainbow() or ESP.Boxes.OutlineRGB
-                                	    BottomRightDownOut.Position = BottomRightDown.Position
-                                	    BottomRightDownOut.Size = BottomRightDown.Size
-                                	    BottomRightDownOut.AnchorPoint = Vec2new(1, 1) 
-								    elseif ESP.Boxes.BoxType == "Full" then
-									    -- it works tho :shrug:
-									    LeftSide.Visible = false
-									    LeftSideOut.Visible = false
-									    BottomRightDown.Visible = false
-									    BottomRightDownOut.Visible = false
-									    RightSide.Visible = false
-									    RightSideOut.Visible = false
-									    RightTop.Visible = false
-									    RightTopOut.Visible = false
-
-									    LeftTop.Visible = true
-									    LeftTop.Position = UDim2new(0, Pos.X - w / 2, 0, Pos.Y - h / 2)
-                                	    LeftTop.Size = UDim2new(0, w, 0, 1)
-									    LeftTop.BackgroundColor3 = Color
-
-                                	    LeftTopOut.Visible = ESP.Boxes.Outline and true or false
-                                        LeftTopOut.BackgroundColor3 = ESP.Boxes.RainbowOutline and ESP:GetRainbow() or ESP.Boxes.OutlineRGB
-									    LeftTopOut.Position = LeftTop.Position
-                                	    LeftTopOut.Size = LeftTop.Size
-
-									    BottomSide.Visible = true
-									    BottomSide.Position = UDim2new(0, Pos.X - w / 2, 0, Pos.Y + h / 2)
-                                	    BottomSide.Size = UDim2new(0, 1, 0, h)
-                                	    BottomSide.AnchorPoint = Vec2new(0, 5)
-									    BottomSide.BackgroundColor3 = Color
-                                
-                                	    BottomSideOut.Visible = ESP.Boxes.Outline and true or false
-                                        BottomSideOut.BackgroundColor3 = ESP.Boxes.RainbowOutline and ESP:GetRainbow() or ESP.Boxes.OutlineRGB
-									    BottomSideOut.Position = BottomSide.Position
-                                	    BottomSideOut.Size = BottomSide.Size
-                                	    BottomSideOut.AnchorPoint = Vec2new(0, 5)
-
-                                	    BottomDown.Visible = true
-									    BottomDown.Position = UDim2new(0, Pos.X - w / 2, 0, Pos.Y + h / 2)
-                                	    BottomDown.Size = UDim2new(0, w, 0, 1)
-                                	    BottomDown.AnchorPoint = Vec2new(0, 1)
-                                	    BottomDown.BackgroundColor3 = Color
-
-                                	    BottomDownOut.Visible = ESP.Boxes.Outline and true or false
-                                        BottomDownOut.BackgroundColor3 = ESP.Boxes.RainbowOutline and ESP:GetRainbow() or ESP.Boxes.OutlineRGB
-									    BottomDownOut.Position = BottomDown.Position
-                                	    BottomDownOut.Size = BottomDown.Size
-                                	    BottomDownOut.AnchorPoint = Vec2new(0, 1)
-
-                                	    BottomRightSide.Visible = true
-									    BottomRightSide.Position = UDim2new(0, Pos.X + w / 2, 0, Pos.Y + h / 2)
-                                	    BottomRightSide.Size = UDim2new(0, 1, 0, h)
-                                	    BottomRightSide.AnchorPoint = Vec2new(1, 1)
-                                	    BottomRightSide.BackgroundColor3 = Color
-
-                                	    BottomRightSideOut.Visible = ESP.Boxes.Outline and true or false
-                                        BottomRightSideOut.BackgroundColor3 = ESP.Boxes.RainbowOutline and ESP:GetRainbow() or ESP.Boxes.OutlineRGB
-									    BottomRightSideOut.Position = BottomRightSide.Position
-                                	    BottomRightSideOut.Size = BottomRightSide.Size
-                                	    BottomRightSideOut.AnchorPoint = Vec2new(1, 1)
-								    end
-							    end
-
-                                do -- Boxes
-                                    Box.Position = UDim2new(0, Pos.X - w / 2, 0, Pos.Y - h / 2)
-                                    Box.Size = UDim2new(0, w, 0, h)
-                                    Box.Visible = ESP.Boxes.Enabled;
-
-                                    -- Gradient
-                                    if ESP.Boxes.Filled.Enabled then
-                                        Box.BackgroundColor3 = Color3RGB(255, 255, 255)
-                                        if ESP.Boxes.Filled.GradientFill then
-                                            Box.BackgroundTransparency = ESP.Boxes.Filled.Transparency;
+                                        if ESP.HighlightTeammates then
+                                            Color = ESP.Skeleton.TeamRainbow and ESP:GetRainbow() or ESP.Skeleton.TeamRGB
                                         else
-                                            Box.BackgroundTransparency = 1
+                                            Color = ESP.Skeleton.Rainbow and ESP:GetRainbow() or ESP.Skeleton.RGB
                                         end
-                                        Box.BorderSizePixel = 1
+
+										line.Color = Color
+										line.Thickness = ESP.Skeleton.Thickness
+										line.Transparency = 1 - ESP.Skeleton.Transparency
+                					end
+            					end
+							end
+							--
+                            do -- Chams
+                                Chams.Adornee = plr.Character
+                                Chams.Enabled = ESP.Chams.Enabled
+                                Chams.FillColor = ESP.Chams.RainbowFill and ESP:GetRainbow() or ESP.Chams.FillRGB
+                                Chams.OutlineColor = ESP.Chams.RainbowOutline and ESP:GetRainbow() or ESP.Chams.OutlineRGB
+                                do -- Breathe
+                                    if ESP.Chams.Thermal then
+                                        local breathe_effect = math.atan(math.sin(tick() * 2)) * 2 / math.pi
+                                        Chams.FillTransparency = ESP.Chams.FillTransparency * breathe_effect * 0.01
+                                        Chams.OutlineTransparency = ESP.Chams.OutlineTransparency * breathe_effect * 0.01
+                                    end
+                                end
+                                if ESP.Chams.VisibleCheck then
+                                    Chams.DepthMode = "Occluded"
+                                else
+                                    Chams.DepthMode = "AlwaysOnTop"
+                                end
+                            end;
+							--
+                            do -- Box
+                                if ESP.HighlightTeammates then
+                                    Color = ESP.Boxes.TeamRainbow and ESP:GetRainbow() or ESP.Boxes.TeamRGB
+                                else
+                                    Color = ESP.Boxes.Rainbow and ESP:GetRainbow() or ESP.Boxes.RGB
+                                end
+
+								if ESP.Boxes.BoxType == "Corner" then
+                                	LeftTop.Visible = true
+                                	LeftTop.Position = UDim2new(0, Pos.X - w / 2, 0, Pos.Y - h / 2)
+                                	LeftTop.Size = UDim2new(0, w / 5, 0, 1)
+									LeftTop.BackgroundColor3 = Color
+                                
+									LeftTopOut.Visible = ESP.Boxes.Outline and true or false
+                                    LeftTopOut.BackgroundColor3 = ESP.Boxes.RainbowOutline and ESP:GetRainbow() or ESP.Boxes.OutlineRGB
+                                	LeftTopOut.Position = LeftTop.Position
+                                	LeftTopOut.Size = LeftTop.Size
+
+                                	LeftSide.Visible = true
+                                	LeftSide.Position = UDim2new(0, Pos.X - w / 2, 0, Pos.Y - h / 2)
+                                	LeftSide.Size = UDim2new(0, 1, 0, h / 5)
+									LeftSide.BackgroundColor3 = Color
+                                
+									LeftSideOut.Visible = ESP.Boxes.Outline and true or false
+                                    LeftSideOut.BackgroundColor3 = ESP.Boxes.RainbowOutline and ESP:GetRainbow() or ESP.Boxes.OutlineRGB
+                                	LeftSideOut.Position = LeftSide.Position
+                                	LeftSideOut.Size = LeftSide.Size
+
+                                	BottomSide.Visible = true
+                                	BottomSide.Position = UDim2new(0, Pos.X - w / 2, 0, Pos.Y + h / 2)
+                                	BottomSide.Size = UDim2new(0, 1, 0, h / 5)
+                                	BottomSide.AnchorPoint = Vec2new(0, 5)
+									BottomSide.BackgroundColor3 = Color
+                                
+									BottomSideOut.Visible = ESP.Boxes.Outline and true or false
+                                    BottomSideOut.BackgroundColor3 = ESP.Boxes.RainbowOutline and ESP:GetRainbow() or ESP.Boxes.OutlineRGB
+                                	BottomSideOut.Position = BottomSide.Position
+                                	BottomSideOut.Size = BottomSide.Size
+                                	BottomSideOut.AnchorPoint = Vec2new(0, 5)
+
+                                	BottomDown.Visible = true
+                                	BottomDown.Position = UDim2new(0, Pos.X - w / 2, 0, Pos.Y + h / 2)
+                                	BottomDown.Size = UDim2new(0, w / 5, 0, 1)
+                                	BottomDown.AnchorPoint = Vec2new(0, 1)
+                                	BottomDown.BackgroundColor3 = Color
+
+									BottomDownOut.Visible = ESP.Boxes.Outline and true or false
+                                    BottomDownOut.BackgroundColor3 = ESP.Boxes.RainbowOutline and ESP:GetRainbow() or ESP.Boxes.OutlineRGB
+                                	BottomDownOut.Position = BottomDown.Position
+                                	BottomDownOut.Size = BottomDown.Size
+                                	BottomDownOut.AnchorPoint = Vec2new(0, 1)
+
+                                	RightTop.Visible = true
+                                	RightTop.Position = UDim2new(0, Pos.X + w / 2, 0, Pos.Y - h / 2)
+                                	RightTop.Size = UDim2new(0, w / 5, 0, 1)
+                                	RightTop.AnchorPoint = Vec2new(1, 0)
+                                	RightTop.BackgroundColor3 = Color
+
+									RightTopOut.Visible = ESP.Boxes.Outline and true or false
+                                    RightTopOut.BackgroundColor3 = ESP.Boxes.RainbowOutline and ESP:GetRainbow() or ESP.Boxes.OutlineRGB
+                                	RightTopOut.Position = RightTop.Position
+                                	RightTopOut.Size = RightTop.Size
+                                	RightTopOut.AnchorPoint = Vec2new(1, 0)
+
+                                	RightSide.Visible = true
+                                	RightSide.Position = UDim2new(0, Pos.X + w / 2 - 1, 0, Pos.Y - h / 2)
+                                	RightSide.Size = UDim2new(0, 1, 0, h / 5)
+                                	RightSide.AnchorPoint = Vec2new(0, 0)
+                               		RightSide.BackgroundColor3 = Color
+							
+									RightSideOut.Visible = ESP.Boxes.Outline and true or false
+                                    RightSideOut.BackgroundColor3 = ESP.Boxes.RainbowOutline and ESP:GetRainbow() or ESP.Boxes.OutlineRGB
+                                	RightSideOut.Position = RightSide.Position
+                                	RightSideOut.Size = RightSide.Size
+                                	RightSideOut.AnchorPoint = Vec2new(0, 0)
+
+                                	BottomRightSide.Visible = true
+                                	BottomRightSide.Position = UDim2new(0, Pos.X + w / 2, 0, Pos.Y + h / 2)
+                                	BottomRightSide.Size = UDim2new(0, 1, 0, h / 5)
+                                	BottomRightSide.AnchorPoint = Vec2new(1, 1)
+                                	BottomRightSide.BackgroundColor3 = Color
+
+									BottomRightSideOut.Visible = ESP.Boxes.Outline and true or false
+                                    BottomRightSideOut.BackgroundColor3 = ESP.Boxes.RainbowOutline and ESP:GetRainbow() or ESP.Boxes.OutlineRGB
+                                	BottomRightSideOut.Position = BottomRightSide.Position
+                                	BottomRightSideOut.Size = BottomRightSide.Size
+                                	BottomRightSideOut.AnchorPoint = Vec2new(1, 1)
+
+                                	BottomRightDown.Visible = true
+                                	BottomRightDown.Position = UDim2new(0, Pos.X + w / 2, 0, Pos.Y + h / 2)
+                                	BottomRightDown.Size = UDim2new(0, w / 5, 0, 1)
+                                	BottomRightDown.AnchorPoint = Vec2new(1, 1) 
+									BottomRightDown.BackgroundColor3 = Color
+                            
+									BottomRightDownOut.Visible = ESP.Boxes.Outline and true or false
+                                    BottomRightDownOut.BackgroundColor3 = ESP.Boxes.RainbowOutline and ESP:GetRainbow() or ESP.Boxes.OutlineRGB
+                                	BottomRightDownOut.Position = BottomRightDown.Position
+                                	BottomRightDownOut.Size = BottomRightDown.Size
+                                	BottomRightDownOut.AnchorPoint = Vec2new(1, 1) 
+								elseif ESP.Boxes.BoxType == "Full" then
+									-- it works tho :shrug:
+									LeftSide.Visible = false
+									LeftSideOut.Visible = false
+									BottomRightDown.Visible = false
+									BottomRightDownOut.Visible = false
+									RightSide.Visible = false
+									RightSideOut.Visible = false
+									RightTop.Visible = false
+									RightTopOut.Visible = false
+
+									LeftTop.Visible = true
+									LeftTop.Position = UDim2new(0, Pos.X - w / 2, 0, Pos.Y - h / 2)
+                                	LeftTop.Size = UDim2new(0, w, 0, 1)
+									LeftTop.BackgroundColor3 = Color
+
+                                	LeftTopOut.Visible = ESP.Boxes.Outline and true or false
+                                    LeftTopOut.BackgroundColor3 = ESP.Boxes.RainbowOutline and ESP:GetRainbow() or ESP.Boxes.OutlineRGB
+									LeftTopOut.Position = LeftTop.Position
+                                	LeftTopOut.Size = LeftTop.Size
+
+									BottomSide.Visible = true
+									BottomSide.Position = UDim2new(0, Pos.X - w / 2, 0, Pos.Y + h / 2)
+                                	BottomSide.Size = UDim2new(0, 1, 0, h)
+                                	BottomSide.AnchorPoint = Vec2new(0, 5)
+									BottomSide.BackgroundColor3 = Color
+                                
+                                	BottomSideOut.Visible = ESP.Boxes.Outline and true or false
+                                    BottomSideOut.BackgroundColor3 = ESP.Boxes.RainbowOutline and ESP:GetRainbow() or ESP.Boxes.OutlineRGB
+									BottomSideOut.Position = BottomSide.Position
+                                	BottomSideOut.Size = BottomSide.Size
+                                	BottomSideOut.AnchorPoint = Vec2new(0, 5)
+
+                                	BottomDown.Visible = true
+									BottomDown.Position = UDim2new(0, Pos.X - w / 2, 0, Pos.Y + h / 2)
+                                	BottomDown.Size = UDim2new(0, w, 0, 1)
+                                	BottomDown.AnchorPoint = Vec2new(0, 1)
+                                	BottomDown.BackgroundColor3 = Color
+
+                                	BottomDownOut.Visible = ESP.Boxes.Outline and true or false
+                                    BottomDownOut.BackgroundColor3 = ESP.Boxes.RainbowOutline and ESP:GetRainbow() or ESP.Boxes.OutlineRGB
+									BottomDownOut.Position = BottomDown.Position
+                                	BottomDownOut.Size = BottomDown.Size
+                                	BottomDownOut.AnchorPoint = Vec2new(0, 1)
+
+                                	BottomRightSide.Visible = true
+									BottomRightSide.Position = UDim2new(0, Pos.X + w / 2, 0, Pos.Y + h / 2)
+                                	BottomRightSide.Size = UDim2new(0, 1, 0, h)
+                                	BottomRightSide.AnchorPoint = Vec2new(1, 1)
+                                	BottomRightSide.BackgroundColor3 = Color
+
+                                	BottomRightSideOut.Visible = ESP.Boxes.Outline and true or false
+                                    BottomRightSideOut.BackgroundColor3 = ESP.Boxes.RainbowOutline and ESP:GetRainbow() or ESP.Boxes.OutlineRGB
+									BottomRightSideOut.Position = BottomRightSide.Position
+                                	BottomRightSideOut.Size = BottomRightSide.Size
+                                	BottomRightSideOut.AnchorPoint = Vec2new(1, 1)
+								end
+							end
+
+                            do -- Boxes
+                                Box.Position = UDim2new(0, Pos.X - w / 2, 0, Pos.Y - h / 2)
+                                Box.Size = UDim2new(0, w, 0, h)
+                                Box.Visible = ESP.Boxes.Enabled;
+
+                                -- Gradient
+                                if ESP.Boxes.Filled.Enabled then
+                                    Box.BackgroundColor3 = Color3RGB(255, 255, 255)
+                                    if ESP.Boxes.Filled.GradientFill then
+                                        Box.BackgroundTransparency = ESP.Boxes.Filled.Transparency;
                                     else
                                         Box.BackgroundTransparency = 1
                                     end
-                                    -- Animation
-                                    RotationAngle = RotationAngle + (tick() - Tick) * ESP.Boxes.RotationSpeed * math.cos(math.pi / 4 * tick() - math.pi / 2)
-                                    if ESP.Boxes.Filled.Animate then
-                                        Gradient1.Rotation = RotationAngle
-                                        Gradient2.Rotation = RotationAngle
-                                    else
-                                        Gradient1.Rotation = -45
-                                        Gradient2.Rotation = -45
-                                    end
-                                    Tick = tick()
+                                    Box.BorderSizePixel = 1
+                                else
+                                    Box.BackgroundTransparency = 1
+                                end
+                                -- Animation
+                                RotationAngle = RotationAngle + (tick() - Tick) * ESP.Boxes.RotationSpeed * math.cos(math.pi / 4 * tick() - math.pi / 2)
+                                if ESP.Boxes.Filled.Animate then
+                                    Gradient1.Rotation = RotationAngle
+                                    Gradient2.Rotation = RotationAngle
+                                else
+                                    Gradient1.Rotation = -45
+                                    Gradient2.Rotation = -45
+                                end
+                                Tick = tick()
+                            end
+
+                            -- HealthBar
+                            do  
+                                if ESP.HighlightTeammates then
+                                    Color = ESP.HealthBar.TeamRainbow and ESP:GetRainbow() or ESP.HealthBar.TeamRGB
+                                else
+                                    Color = ESP.HealthBar.Rainbow and ESP:GetRainbow() or ESP.HealthBar.RGB
                                 end
 
-                                -- HealthBar
-                                do  
+                                local health = Humanoid.Health / Humanoid.MaxHealth;
+								HealthBar.Visible = ESP.HealthBar.Enabled;
+                                HealthBar.Position = UDim2new(0, Pos.X - w / 2 - 6, 0, Pos.Y - h / 2 + h * (1 - health))  
+                                HealthBar.Size = UDim2new(0, ESP.HealthBar.Width, 0, h * health)
+								--
+								BehindHealthBar.Visible = ESP.HealthBar.Enabled;
+                                BehindHealthBar.Position = UDim2new(0, Pos.X - w / 2 - 6, 0, Pos.Y - h / 2)  
+                                BehindHealthBar.Size = UDim2new(0, ESP.HealthBar.Width, 0, h)
+
+								if not ESP.HealthBar.Gradient then 
+									HealthBar.BackgroundColor3 = Color
+                                else
+									HealthBar.BackgroundColor3 = Color3RGB(255, 255, 255)
+								end
+								--
+                                HealthBarGradient.Enabled = ESP.HealthBar.Gradient
+                                HealthBarGradient.Color = ESP.HealthBar.RainbowGradient and CSnew({CSKnew(0, ESP:GetRainbowClr("first")), CSKnew(0.5, ESP:GetRainbowClr("second")), CSKnew(1, ESP:GetRainbowClr("third"))}) or CSnew({CSKnew(0, ESP.HealthBar.GradientRGB1), CSKnew(0.5, ESP.HealthBar.GradientRGB2), CSKnew(1, ESP.HealthBar.GradientRGB3)})
+                                -- Health Text
+                                do
                                     if ESP.HighlightTeammates then
-                                        Color = ESP.HealthBar.TeamRainbow and ESP:GetRainbow() or ESP.HealthBar.TeamRGB
+                                        Color = ESP.HealthBar.TeamRainbowText and ESP:GetRainbow() or ESP.HealthBar.TextTeamRGB
                                     else
-                                        Color = ESP.HealthBar.Rainbow and ESP:GetRainbow() or ESP.HealthBar.RGB
+                                        Color = ESP.HealthBar.RainbowText and ESP:GetRainbow() or ESP.HealthBar.HealthTextRGB
                                     end
 
-                                    local health = Humanoid.Health / Humanoid.MaxHealth;
-								    HealthBar.Visible = ESP.HealthBar.Enabled;
-                                    HealthBar.Position = UDim2new(0, Pos.X - w / 2 - 6, 0, Pos.Y - h / 2 + h * (1 - health))  
-                                    HealthBar.Size = UDim2new(0, ESP.HealthBar.Width, 0, h * health)
-								    --
-								    BehindHealthBar.Visible = ESP.HealthBar.Enabled;
-                                    BehindHealthBar.Position = UDim2new(0, Pos.X - w / 2 - 6, 0, Pos.Y - h / 2)  
-                                    BehindHealthBar.Size = UDim2new(0, ESP.HealthBar.Width, 0, h)
-
-								    if not ESP.HealthBar.Gradient then 
-									    HealthBar.BackgroundColor3 = Color
-                                    else
-									    HealthBar.BackgroundColor3 = Color3RGB(255, 255, 255)
-								    end
-								    --
-                                    HealthBarGradient.Enabled = ESP.HealthBar.Gradient
-                                    HealthBarGradient.Color = ESP.HealthBar.RainbowGradient and CSnew({CSKnew(0, ESP:GetRainbowClr("first")), CSKnew(0.5, ESP:GetRainbowClr("second")), CSKnew(1, ESP:GetRainbowClr("third"))}) or CSnew({CSKnew(0, ESP.HealthBar.GradientRGB1), CSKnew(0.5, ESP.HealthBar.GradientRGB2), CSKnew(1, ESP.HealthBar.GradientRGB3)})
-                                    -- Health Text
-                                    do
-                                        if ESP.HighlightTeammates then
-                                            Color = ESP.HealthBar.TeamRainbowText and ESP:GetRainbow() or ESP.HealthBar.TextTeamRGB
+                                    if ESP.HealthBar.HealthText then
+                                        local healthPercentage = Floor(Humanoid.Health / Humanoid.MaxHealth * 100)
+                                        HealthText.Position = ESP.HealthBar.HealthTextPosition == "Follow Bar" and UDim2new(0, Pos.X - w / 2 - 6, 0, Pos.Y - h / 2 + h * (1 - healthPercentage / 100) + 3) or UDim2new(-0.006, Pos.X - w / 2 - 6, 0, Pos.Y - h / 2 + h / 100 + 3)
+                                        HealthText.Text = tostring(healthPercentage)
+                                        HealthText.FontFace = Fonts[ESP.HealthBar.Font]
+                                        HealthText.TextSize = ESP.HealthBar.TextSize
+                                        HealthText.Visible = true --Humanoid.Health < Humanoid.MaxHealth
+                                        if ESP.HealthBar.Lerp then
+                                            local color = health >= 0.75 and Color3RGB(0, 255, 0) or health >= 0.5 and Color3RGB(255, 255, 0) or health >= 0.25 and Color3RGB(255, 170, 0) or Color3RGB(255, 0, 0)
+                                            HealthText.TextColor3 = color
                                         else
-                                            Color = ESP.HealthBar.RainbowText and ESP:GetRainbow() or ESP.HealthBar.HealthTextRGB
+                                            HealthText.TextColor3 = Color
                                         end
+									else
+										HealthText.Visible = false
+                                    end                        
+                                end
+                            end
 
-                                        if ESP.HealthBar.HealthText then
-                                            local healthPercentage = Floor(Humanoid.Health / Humanoid.MaxHealth * 100)
-                                            HealthText.Position = ESP.HealthBar.HealthTextPosition == "Follow Bar" and UDim2new(0, Pos.X - w / 2 - 6, 0, Pos.Y - h / 2 + h * (1 - healthPercentage / 100) + 3) or UDim2new(-0.006, Pos.X - w / 2 - 6, 0, Pos.Y - h / 2 + h / 100 + 3)
-                                            HealthText.Text = tostring(healthPercentage)
-                                            HealthText.FontFace = Fonts[ESP.HealthBar.Font]
-                                            HealthText.TextSize = ESP.HealthBar.TextSize
-                                            HealthText.Visible = true --Humanoid.Health < Humanoid.MaxHealth
-                                            if ESP.HealthBar.Lerp then
-                                                local color = health >= 0.75 and Color3RGB(0, 255, 0) or health >= 0.5 and Color3RGB(255, 255, 0) or health >= 0.25 and Color3RGB(255, 170, 0) or Color3RGB(255, 0, 0)
-                                                HealthText.TextColor3 = color
-                                            else
-                                                HealthText.TextColor3 = Color
-                                            end
-									    else
-										    HealthText.Visible = false
-                                        end                        
-                                    end
+                            do -- Names
+                                if ESP.HighlightTeammates then
+                                    Color = ESP.Names.TeamRainbow and ESP:GetRainbow() or ESP.Names.TeamRGB
+                                else
+                                    Color = ESP.Names.Rainbow and ESP:GetRainbow() or ESP.Names.RGB
                                 end
 
-                                do -- Names
-                                    if ESP.HighlightTeammates then
-                                        Color = ESP.Names.TeamRainbow and ESP:GetRainbow() or ESP.Names.TeamRGB
-                                    else
-                                        Color = ESP.Names.Rainbow and ESP:GetRainbow() or ESP.Names.RGB
-                                    end
-
-								    local plrName = ESP.Names.NameType == "Display Name" and plr.DisplayName or plr.Name
-                                    --plrBracName = not ESP.Names.Brackets == "None" and Brackets[ESP.Names.Brackets][1] .. plrName .. Brackets[ESP.Names.Brackets][2] or plrName
-                                    if not ESP.Names.Brackets == "None" then
-                                        plrBracName = Brackets[ESP.Names.Brackets][1] .. plrName .. Brackets[ESP.Names.Brackets][2] 
-                                    else 
-                                        plrBracName = plrName
-                                    end
-                                    --print(plrName)
-
-                                    Name.Visible = ESP.Names.Enabled
-                                    Name.FontFace = Fonts[ESP.Names.Font]
-                                    Name.TextSize = ESP.Names.TextSize
-                                    Name.Position = UDim2new(0, Pos.X, 0, Pos.Y - h / 2 - 9)
-								    Name.TextColor3 = Color
+								local plrName = ESP.Names.NameType == "Display Name" and plr.DisplayName or plr.Name
+                                --plrBracName = not ESP.Names.Brackets == "None" and Brackets[ESP.Names.Brackets][1] .. plrName .. Brackets[ESP.Names.Brackets][2] or plrName
+                                if not ESP.Names.Brackets == "None" then
+                                    plrBracName = Brackets[ESP.Names.Brackets][1] .. plrName .. Brackets[ESP.Names.Brackets][2] 
+                                else 
+                                    plrBracName = plrName
                                 end
+                                --print(plrName)
+
+                                Name.Visible = ESP.Names.Enabled
+                                Name.FontFace = Fonts[ESP.Names.Font]
+                                Name.TextSize = ESP.Names.TextSize
+                                Name.Position = UDim2new(0, Pos.X, 0, Pos.Y - h / 2 - 9)
+								Name.TextColor3 = Color
+                            end
                             
-                                do -- Distance
-                                    if ESP.Distances.Enabled then
-                                        if ESP.HighlightTeammates then
-                                            Color = ESP.Distances.TeamRainbow and ESP:GetRainbow() or ESP.Distances.TeamRGB
-                                        else
-                                            Color = ESP.Distances.Rainbow and ESP:GetRainbow() or ESP.Distances.RGB
-                                        end
+                            do -- Distance
+                                if ESP.Distances.Enabled then
+                                    if ESP.HighlightTeammates then
+                                        Color = ESP.Distances.TeamRainbow and ESP:GetRainbow() or ESP.Distances.TeamRGB
+                                    else
+                                        Color = ESP.Distances.Rainbow and ESP:GetRainbow() or ESP.Distances.RGB
+                                    end
 
                                         --[[local plrName = ESP.Names.NameType == "Display Name" and plr.DisplayName or plr.Name
                                         local plrBracName = not ESP.Names.Brackets == "None" and Brackets[ESP.Names.Brackets][1] .. plrName .. Brackets[ESP.Names.Brackets][2] or plrName
@@ -922,84 +923,73 @@ do -- Initalize
                                             plrBracName = plrName
                                         end]]
 
-                                        if ESP.Distances.Position == "Bottom" then
-                                            local DistanceNum = not ESP.Distances.Brackets == "None" and Brackets[ESP.Distances.Brackets][1] .. Floor(Dist) .. Brackets[ESP.Distances.Brackets][2] 
+                                    if ESP.Distances.Position == "Bottom" then
+                                        local DistanceNum = not ESP.Distances.Brackets == "None" and Brackets[ESP.Distances.Brackets][1] .. Floor(Dist) .. Brackets[ESP.Distances.Brackets][2] 
 
-                                            Weapon.Position = UDim2new(0, Pos.X, 0, Pos.Y + h / 2 + 18)
-                                            Distance.Position = UDim2new(0, Pos.X, 0, Pos.Y + h / 2 + 7)
-                                            Distance.FontFace = Fonts[ESP.Distances.Font]
-                                            Distance.TextSize = ESP.Distances.TextSize
-                                            Distance.Text = Format("%d" .. ESP.Distances.Suffix, Floor(Dist))
-                                            Distance.Visible = true
-										    Distance.TextColor3 = Color
-                                        elseif ESP.Distances.Position == "Text" then
-                                            Weapon.Position = UDim2new(0, Pos.X, 0, Pos.Y + h / 2 + 8)
-                                            Distance.Visible = false
-                                            Name.Text = Format('%s [%d]', 255, 0, 0, plrBracName, Floor(Dist))
-                                            Name.Visible = ESP.Names.Enabled
-                                        end
-								    else
-									    Distance.Visible = false
+                                        Weapon.Position = UDim2new(0, Pos.X, 0, Pos.Y + h / 2 + 18)
+                                        Distance.Position = UDim2new(0, Pos.X, 0, Pos.Y + h / 2 + 7)
+                                        Distance.FontFace = Fonts[ESP.Distances.Font]
+                                        Distance.TextSize = ESP.Distances.TextSize
+                                        Distance.Text = Format("%d" .. ESP.Distances.Suffix, Floor(Dist))
+                                        Distance.Visible = true
+										Distance.TextColor3 = Color
+                                    elseif ESP.Distances.Position == "Text" then
+                                        Weapon.Position = UDim2new(0, Pos.X, 0, Pos.Y + h / 2 + 8)
+                                        Distance.Visible = false
+                                        Name.Text = Format('%s [%d]', 255, 0, 0, plrBracName, Floor(Dist))
+                                        Name.Visible = ESP.Names.Enabled
                                     end
+								else
+									Distance.Visible = false
                                 end
-
-                                do -- Weapons
-								    local tool = FFCOC(character, "Tool")
-                                    if tool then
-                                        if not ESP.Weapons.Brackets == "None" then
-                                            ToolName = Brackets[ESP.Weapons.Brackets][1] .. tool.Name .. Brackets[ESP.Weapons.Brackets][2]
-                                        else
-                                            ToolName = tool.Name
-                                        end
-                                    else
-                                        ToolName = "Nothing"
-                                    end
-
-                                    if ESP.HighlightTeammates then
-                                        Color = ESP.Weapons.TeamRainbow and ESP:GetRainbow() or ESP.Weapons.TeamRGB
-                                    else
-                                        Color = ESP.Weapons.Rainbow and ESP:GetRainbow() or ESP.Weapons.RGB
-                                    end
-
-                                    Weapon.Text = ToolName
-								    Weapon.TextColor3 = Color
-                                    Weapon.FontFace = Fonts[ESP.Weapons.Font]
-                                    Weapon.TextSize = ESP.Weapons.TextSize
-                                    Weapon.Visible = ESP.Weapons.Enabled
-                                end
-
-							    if ESP.Boxes.Filled.GradientFill then
-								    Gradient1.Enabled = true
-                    			    Gradient1.Color = CSnew{CSKnew(0, ESP.Boxes.Filled.GradientFillRGB1), CSKnew(1, ESP.Boxes.Filled.GradientFillRGB2)}
-                			    else
-								    Gradient1.Enabled = false
-                    			    Gradient1.Color = CSnew{CSKnew(0, ESP.Boxes.Filled.RGB), CSKnew(1, ESP.Boxes.Filled.RGB)}
-                			    end
-                			    if ESP.Boxes.Gradient then
-								    Gradient2.Enabled = true
-                    			    Gradient2.Color = CSnew{CSKnew(0, ESP.Boxes.GradientRGB1), CSKnew(1, ESP.Boxes.GradientRGB2)}
-                			    else
-								    Gradient2.Enabled = false
-                    			    Gradient2.Color = CSnew{CSKnew(0, ESP.Boxes.RGB), CSKnew(1, ESP.Boxes.RGB)}
-                			    end
                             end
-                        else
-                            HideESP();
+
+                            do -- Weapons
+								local tool = character:FindFirstChildOfClass("Tool")
+                                if tool then
+                                    if not ESP.Weapons.Brackets == "None" then
+                                        ToolName = Brackets[ESP.Weapons.Brackets][1] .. tool.Name .. Brackets[ESP.Weapons.Brackets][2]
+                                    else
+                                        ToolName = tool.Name
+                                    end
+                                else
+                                    ToolName = "Nothing"
+                                end
+
+                                if ESP.HighlightTeammates then
+                                    Color = ESP.Weapons.TeamRainbow and ESP:GetRainbow() or ESP.Weapons.TeamRGB
+                                else
+                                    Color = ESP.Weapons.Rainbow and ESP:GetRainbow() or ESP.Weapons.RGB
+                                end
+
+                                Weapon.Text = ToolName
+								Weapon.TextColor3 = Color
+                                Weapon.FontFace = Fonts[ESP.Weapons.Font]
+                                Weapon.TextSize = ESP.Weapons.TextSize
+                                Weapon.Visible = ESP.Weapons.Enabled
+                            end
+
+							if ESP.Boxes.Filled.GradientFill then
+								Gradient1.Enabled = true
+                    			Gradient1.Color = CSnew{CSKnew(0, ESP.Boxes.Filled.GradientFillRGB1), CSKnew(1, ESP.Boxes.Filled.GradientFillRGB2)}
+                			else
+								Gradient1.Enabled = false
+                    			Gradient1.Color = CSnew{CSKnew(0, ESP.Boxes.Filled.RGB), CSKnew(1, ESP.Boxes.Filled.RGB)}
+                			end
+                			if ESP.Boxes.Gradient then
+								Gradient2.Enabled = true
+                    			Gradient2.Color = CSnew{CSKnew(0, ESP.Boxes.GradientRGB1), CSKnew(1, ESP.Boxes.GradientRGB2)}
+                			else
+								Gradient2.Enabled = false
+                    			Gradient2.Color = CSnew{CSKnew(0, ESP.Boxes.RGB), CSKnew(1, ESP.Boxes.RGB)}
+                			end
                         end
-                    end
-                    --[[ man i am so bad at coding... don't know how to get this working bc of the code
                     else
-                        if ESP.FadeOut.OnDeath then
-						    print("Fading out on death...")
-                            for _, element in ScreenGui[plr.Name]:GetChildren() do
-                                if not element:IsA("Highlight") then
-                                    ESP:FadeOutOnDeath(element)
-                                end
-                            end
-					    else
-                    	    HideESP();
-                        end
-                    end]]
+                        HideESP();
+                    end
+                else
+                    HideESP();
+                end
                 IsEnabled();
             end)
             if not Tblfind(ESP.Loops, Connection) then

@@ -10,10 +10,10 @@ local cloneref = cloneref or function(v)
 end
 
 local function gs(service)
-    return game:FindService(service) -- much faster than GetService
+    return cloneref(game:GetService(service))
 end
 
-local Workspace, RunService, Players, HttpService, CoreGui, Lighting = cloneref(gs("Workspace")), cloneref(gs("RunService")), cloneref(gs("Players")), cloneref(gs("HttpService")), gs("CoreGui"), cloneref(gs("Lighting"))
+local Workspace, RunService, Players, HttpService, CoreGui, Lighting = gs("Workspace"), gs("RunService"), gs("Players"), gs("HttpService"), gs("CoreGui"), gs("Lighting")
 
 local Instancenew, Vec2new, Vec3new, UDim2new, Drawingnew = Instance.new, Vector2.new, Vector3.new, UDim2.new, Drawing.new;
 local Color3RGB, Color3HSV, CSnew, CSKnew = Color3.fromRGB, Color3.fromHSV, ColorSequence.new, ColorSequenceKeypoint.new;

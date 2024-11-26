@@ -109,10 +109,13 @@ getgenv().ESP = {
 	Elements = {};
 }
 
+-- incase the repo goes down
+local url = "https://raw.githubusercontent.com/onlyokok/Francium-Rewrite/main/Modules/Interface/Fonts/"
+
 -- font initialization, taken from office
 if writefile and isfile and Base64Dec then
 	if not isfile("Proggy.ttf") then
-		writefile("Proggy.ttf", Base64Dec(game:HttpGet("https://raw.githubusercontent.com/OxygenClub/Random-LUAS/main/Proggy.txt")))
+		writefile("Proggy.ttf", Base64Dec(game:HttpGet(url .. "Proggy.txt")))
 	end
 
 	if not isfile("Proggy.json") then
@@ -132,7 +135,7 @@ if writefile and isfile and Base64Dec then
 	end
 
 	if not isfile("Minecraftia.ttf") then
-		writefile("Minecraftia.ttf", Base64Dec(game:HttpGet("https://raw.githubusercontent.com/OxygenClub/Random-LUAS/main/Minecraftia.txt")))
+		writefile("Minecraftia.ttf", Base64Dec(game:HttpGet(url .. "Minecraftia.txt")))
 	end
 
 	if not isfile("Minecraftia.json") then
@@ -152,7 +155,7 @@ if writefile and isfile and Base64Dec then
 	end
 
 	if not isfile("SmallestPixel7.ttf") then
-		writefile("SmallestPixel7.ttf", Base64Dec(game:HttpGet("https://raw.githubusercontent.com/OxygenClub/Random-LUAS/main/Smallest%20Pixel.txt")))
+		writefile("SmallestPixel7.ttf", Base64Dec(game:HttpGet(url .. "SmallestPixel7.txt")))
 	end
 
 	if not isfile("SmallestPixel7.json") then
@@ -172,7 +175,7 @@ if writefile and isfile and Base64Dec then
 	end
 
 	if not isfile("Verdana.ttf") then
-		writefile("Verdana.ttf", Base64Dec(game:HttpGet("https://raw.githubusercontent.com/OxygenClub/Random-LUAS/main/Verdana.txt")))
+		writefile("Verdana.ttf", Base64Dec(game:HttpGet(url .. "Verdana.txt")))
 	end
 
 	if not isfile("Verdana.json") then
@@ -192,7 +195,7 @@ if writefile and isfile and Base64Dec then
 	end
 
 	if not isfile("VerdanaBold.ttf") then
-		writefile("VerdanaBold.ttf", Base64Dec(game:HttpGet("https://raw.githubusercontent.com/OxygenClub/Random-LUAS/main/Verdana%20Bold.txt")))
+		writefile("VerdanaBold.ttf", Base64Dec(game:HttpGet(url .. "VerdanaBold.txt")))
 	end
 
 	if not isfile("VerdanaBold.json") then
@@ -212,7 +215,7 @@ if writefile and isfile and Base64Dec then
 	end
 
 	if not isfile("Tahoma.ttf") then
-		writefile("Tahoma.ttf", Base64Dec(game:HttpGet("https://raw.githubusercontent.com/OxygenClub/Random-LUAS/main/Tahoma.txt")))
+		writefile("Tahoma.ttf", Base64Dec(game:HttpGet(url .. "Tahoma.txt")))
 	end
 
 	if not isfile("Tahoma.json") then
@@ -232,7 +235,7 @@ if writefile and isfile and Base64Dec then
 	end
 
 	if not isfile("TahomaBold.ttf") then
-		writefile("TahomaBold.ttf", Base64Dec(game:HttpGet("https://raw.githubusercontent.com/OxygenClub/Random-LUAS/main/Tahoma%20Bold.txt")))
+		writefile("TahomaBold.ttf", Base64Dec(game:HttpGet(url .. "TahomaBold.txt")))
 	end
 
 	if not isfile("TahomaBold.json") then
